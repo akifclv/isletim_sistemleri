@@ -36,7 +36,7 @@ public class Dispatcher implements IDispatcher{
 		};
 	}
 	
-	//Singleton pattern is being used to create an instance from this class
+	//Bu sınıftan bir örnek oluşturmak için Singleton modeli kullanılıyor
 	public static IDispatcher getInstance(String filePath, int quantum, int maxWaitingTime)
 	{
 		if (instance == null) {
@@ -48,7 +48,8 @@ public class Dispatcher implements IDispatcher{
 	@Override
 	public IDispatcher readFile() 
 	{
-		//Processes are being sorted first by their priority and then by their arrival time
+		//
+		//İşlemler önce önceliklerine, ardından varış saatlerine göre sıralanıyor
 		
 		PriorityQueue<IProcess> priorityQueue = new PriorityQueue<IProcess>(
 					new ProcessComparator()
@@ -80,8 +81,9 @@ public class Dispatcher implements IDispatcher{
 		}
 
 		/*
-			After sorting the processes using comparator defined for the priority queue
-		 	they are copied to Arraylist to make it easier to traverse the list
+
+			Öncelik kuyruğu için tanımlanan karşılaştırıcıyı kullanarak işlemleri sıraladıktan sonra
+			listede gezinmeyi kolaylaştırmak için Arraylist'e kopyalanırlar
 		*/
 		
 		while (!priorityQueue.isEmpty())
@@ -96,24 +98,26 @@ public class Dispatcher implements IDispatcher{
 	@Override
 	public void start() throws IOException, InterruptedException 
 	{
-		//The last process that was being executed
+		//yurutulen son islem
 		IProcess lastProcess = null;
 		
 		while(!this.allProcesses.isEmpty())
 		{
-			//The process that needs to be executed at that moment is searched
+			//
+			//O anda yürütülmesi gereken süreç aranı
 			IProcess currentProcess = this.getCurrentProcess();
 			
 			if (currentProcess != null)
 			{
-				//If the current process is of higher priority, the last process is interrupted
+				//Mevcut süreç daha yüksek önceliğe sahipse son süreç kesintiye uğrar
 				if (lastProcess != null && currentProcess.hasHigherPriority(lastProcess))
 				{
 					this.interrupt(lastProcess);
 					lastProcess = null;
 				}
 			
-				//If the current process is real time, it is assigned to its respective queue and run
+				//
+				//Mevcut süreç gerçek zamanlı ise ilgili kuyruğa atanır ve çalıştırılır.
 				if(currentProcess.isRealTime())
 				{
 					realTimeQueue.add(currentProcess);
@@ -122,7 +126,8 @@ public class Dispatcher implements IDispatcher{
 				}
 				else
 				{
-					//If it is user process, it is assigned to userjob queue
+					//
+					//Kullanıcı işlemi ise kullanıcı işi kuyruğuna atanır.
 					userJob.distribute(currentProcess);
 				}
 			}
@@ -132,10 +137,11 @@ public class Dispatcher implements IDispatcher{
 				lastProcess = userJob.run();
 			}
 			else
-				Timer.tick();				//if there is no queue to be run, the timer is ticked
+				Timer.tick();//çalıştırılacak kuyruk yoksa zamanlayıcı işaretlenir
 		}
 		
-		//If the User job queue still has process, it is let to execute it's processes
+		//
+		//Kullanıcı iş kuyruğunda hala işlem varsa, işlemlerinin yürütülmesine izin verilir
 		while(userJob.hasProcess()) 
 		{
 			userJob.run();
@@ -143,11 +149,12 @@ public class Dispatcher implements IDispatcher{
 		
 	}
 	
-	//It interrupts the process
+	//Süreci kesintiye uğratır
 	@Override
 	public void interrupt(IProcess process) {
 		pendingProcesses.add(lastProcess);
-		//When a process is interrupted its state is set to "ready"
+		//
+		//Bir süreç kesintiye uğradığında durumu "hazır" olarak ayarlanır
 		process.setState(State.READY);	
 		Console.printProcessState(process, "is interrupted");
 	}
@@ -161,7 +168,8 @@ public class Dispatcher implements IDispatcher{
 		return this.colors[randomIndex];
 	}
 	
-	//Finds out the priority enum value for a integer value passed in
+	//
+	//İletilen bir tamsayı değeri için öncelik sıralaması değerini bulur
 	private Priority convertToPriority(int priorityValue)
 	{
 		return switch(priorityValue) {
@@ -173,7 +181,7 @@ public class Dispatcher implements IDispatcher{
 		};
 	}
 
-	//Checks whether the process passed in has arrived or not
+	//İletilen işlemin gelip gelmediğini kontrol eder
 	@Override
 	public boolean processHasArrived(IProcess process) {
 		if (Timer.getCurrentTime() >= process.getArrivalTime()) {
@@ -184,7 +192,7 @@ public class Dispatcher implements IDispatcher{
 		return false;
 	}
 	
-	//Finds out the process with the highest priority that needs to be executed at the moment
+	//Şu anda yürütülmesi gereken en yüksek önceliğe sahip süreci bulur
 	@Override
 	public IProcess getCurrentProcess()
 	{
@@ -192,7 +200,7 @@ public class Dispatcher implements IDispatcher{
 		{
 			if (this.processHasArrived(currentProcess)) 
 			{
-				//if the process has arrived it is removed from the waiting list and returned
+				//işlem geldiyse bekleme listesinden çıkarılır ve geri gönderilir
 				this.allProcesses.remove(currentProcess);
 				return currentProcess;
 			}
@@ -201,12 +209,13 @@ public class Dispatcher implements IDispatcher{
 		return null;
 	}
 	
-	//Checks if there is/are any process(es) which exceeded the maximum waiting time
+	//
+	//Maksimum bekleme süresini aşan işlem(ler)in olup olmadığını kontrol eder
 	public static void checkPendingProcesses()
 	{
 		for (IProcess process : new ArrayList<IProcess>(pendingProcesses))
 		{
-			//if 20 seconds have passed the process is terminated
+			//20 saniye geçmişse işlem sonlandırılır
 			if (Dispatcher.shouldBeTerminated(process))
 			{
 				if(process.isRealTime())
@@ -220,7 +229,8 @@ public class Dispatcher implements IDispatcher{
 		}
 	}
 	
-	//Checks if the process passed in has exceeded maximum waiting time
+	//
+	//Aktarılan işlemin maksimum bekleme süresini aşıp aşmadığını kontrol eder
 	public static boolean shouldBeTerminated(IProcess process)
 	{
 		return !process.isOver() && process.getWaitingTime() >= maxWaitingTime;

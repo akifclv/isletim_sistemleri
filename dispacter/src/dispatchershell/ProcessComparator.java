@@ -3,9 +3,9 @@ package dispatchershell;
 import java.util.Comparator;
 
 /*
-  A comparator class used to compare and sort processes based on their priority
-  Note: First the priority is being used as a paramter to compare two processes
-		if their priority is equal, their arrival time is being used as a factor
+  İşlemleri önceliklerine göre karşılaştırmak ve sıralamak için kullanılan bir karşılaştırıcı sınıf
+  Not: Öncelikle öncelik, iki işlemi karşılaştırmak için bir parametre olarak kullanılıyor
+öncelikleri eşitse varış süreleri bir faktör olarak kullanılıyor
 */
 public class ProcessComparator implements Comparator<IProcess>{
 

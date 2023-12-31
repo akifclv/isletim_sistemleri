@@ -22,13 +22,13 @@ public class Process implements IProcess {
 		this.state = State.NEW;
 	}
 	
-	//executes the process for the amount of quantum provided
+	//proses quantum suresi boyunca calisir
 	@Override
 	public State execute(int quantum) throws IOException, InterruptedException {
 		while (quantum > 0 && !this.isOver()) 
 		{
 			Console.printProcessState(this, "is running");
-			//The timer is ticked for each second the process has executed
+			//timeri her saniye artırır
 			Timer.tick();
 			
 			this.setState(State.RUNNING);
@@ -36,41 +36,41 @@ public class Process implements IProcess {
 			quantum--;
 		}
 
-		//The process's state is updated to "WAITING"
+		//prosesi bekleme durumuna update ediyor
 		this.setState(State.WAITING);
 		
-		//If the process is over
+		//eger proses sonlarirsa
 		if(this.isOver()) {
 			Console.printProcessState(this, "has ended");
 			this.setState(State.TERMINATED);
 		}
 		
-		//Last execution time is recorded for tracking the waiting time of the process
+		//Prosesin bekleme süresinin takibi için son yürütme süresi kaydedilir
 		this.lastExecutionTime = Timer.getCurrentTime();
 		
 		return this.getState();
 	}
 	
-	//Compares the priority of the process passed in with the process this function is called upon
+	//proseslerin oncelik siralamasini karsilastirir
 	@Override
 	public boolean hasHigherPriority(IProcess other) {
 		if (other == null) return true;
 		return this.getPriority().ordinal() < other.getPriority().ordinal();
 	}
 
-	//computes the waiting time of the process
+	//sürecin bekleme süresini hesaplar
 	@Override
 	public int getWaitingTime() {
 		return Timer.getCurrentTime() - this.lastExecutionTime;
 	}
 	
-	//checks whether the process is over
+	//işlemin bitip bitmediğini kontrol eder
 	@Override
 	public boolean isOver() {
 		return this.getBurstTime() == this.getElapsedTime();
 	}
 	
-	//Tells if the process is realtime
+	//Sürecin gerçek zamanlı olup olmadığını söyler
 	@Override
 	public boolean isRealTime() {
 		return this.priority == Priority.REALTIME;

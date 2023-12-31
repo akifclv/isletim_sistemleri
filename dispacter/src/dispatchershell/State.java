@@ -1,6 +1,6 @@
 package dispatchershell;
 
-//Enum defined to represent the state of processes
+//Enumlar tanimlandi
 public enum State {
 	WAITING,
 	RUNNING,

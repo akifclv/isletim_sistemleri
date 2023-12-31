@@ -2,7 +2,7 @@ package dispatchershell;
 import java.io.IOException;
 import java.awt.SystemColor;
 
-//Utility class used to log message to the console
+//Mesajı konsola kaydetmek için kullanılan yardımcı program sınıfı
 public class Console {
 	public static void log(String text)
 	{

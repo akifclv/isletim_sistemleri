@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-//A Multilevel-Feedback queue(3 levels) that manages user processes
+// cok beslemeli 3 levelli kuyruk kullanici proseslerini yonetiyor
 public class UserJob implements IUserJob{
 	
 	private Queue<IProcess>[] processQueue;
@@ -20,7 +20,7 @@ public class UserJob implements IUserJob{
 		this.quantum = quantum;
 		processQueue = new LinkedList[SIZE];
 				
-		//The multilevel feedback queues
+		//coklu kuru beslemeli kuyruk
 		processQueue[HIGHESTPRIORITY] = new LinkedList<IProcess>();
 		processQueue[MEDIUMPRIORITY] = new LinkedList<IProcess>();
 		processQueue[LOWESTPRIORITY] = new LinkedList<IProcess>();
@@ -32,16 +32,16 @@ public class UserJob implements IUserJob{
 		
 		for(int i = 0; i < SIZE; i++)
 		{
-			//The queue with the highest priority is let run
+			//yuksek oncelikli kuyrugu cagiriyor
 			if(!processQueue[i].isEmpty()) {
 				//The current process is pulled out from the queue
 				currentProcess = this.processQueue[i].poll();
 				
-				//process is executed
+				//proses calisiyor
 				State state = currentProcess.execute(this.quantum);
 				
 				if(state != State.TERMINATED) {
-					//After execution, the process is assigned to the next queue(if possible)
+					//proses calistiktan sonra sonraki kuyruga geciyor
 					
 					if(i + 1 < SIZE) {
 						currentProcess.reducePriority();
@@ -59,7 +59,7 @@ public class UserJob implements IUserJob{
 		return currentProcess;
 	}
 	
-	//Checks if the userjob has a process in any of its queues.
+	//Kullanıcı işinin herhangi bir kuyrukta bir işlemi olup olmadığını kontrol eder.
 	@Override	
 	public boolean hasProcess() {	
 		
@@ -69,7 +69,7 @@ public class UserJob implements IUserJob{
 		return false;
 	}
 	
-	//Removes a process from the respective queue it belongs to
+	//prosesi kuyruktan kaldiriyor
 	@Override
 	public void remove(IProcess process) {
 		int priorityValue = process.getPriority().ordinal();
@@ -77,7 +77,7 @@ public class UserJob implements IUserJob{
 		this.processQueue[level].remove(process);
 	}
 	
-	//Assigns the process passed in to the queue it belongs to
+	//prosesi sonraki kuyruga atar
 	@Override
 	public void distribute(IProcess process) {
 		

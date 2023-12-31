@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-//A queue class used to manage real time processes
+//gercek zamanli prosesler kullanir
 public class RealTimeQueue implements IRealTimeQueue {
 	private Queue<IProcess> queue;
 	
@@ -27,7 +27,7 @@ public class RealTimeQueue implements IRealTimeQueue {
 		return this.queue.isEmpty();
 	}
 
-	//A function that executes processes in First-Come, First-Served algorithm
+	//first come firs algoritamasini calistirir
 	@Override
 	public void run() throws IOException, InterruptedException 
 	{

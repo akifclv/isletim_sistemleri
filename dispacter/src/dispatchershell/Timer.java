@@ -1,20 +1,21 @@
 package dispatchershell;
 
-//A class used to control time throughout the execution of this program
+//program calisması boyunca burayı kullanir
 public class Timer {
 	private static final int ONESECOND = 0;
 	private static int currentTime = 0;
 	
 	public static void tick()
 	{
-		//sleep for one second
+		//1 saniye bekler
 		try
         {
             Thread.sleep(ONESECOND);
             currentTime++;
             /*
-                For every second that passes, the waiting list of processes is checked
-                This is done to terminates any process that has exceeded maximum waiting time
+
+                Gecen her saniye süreçlerin bekleme listesi kontrol ediliyor
+                Bu, maksimum bekleme süresini aşan herhangi bir işlemi sonlandırmak için yapılır.
             */
 
             Dispatcher.checkPendingProcesses();
