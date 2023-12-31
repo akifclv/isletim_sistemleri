@@ -12,7 +12,7 @@ public enum Color {
 	
 	public final String colorCode;
     
-    //Constructor
+    //Kurucu fonksiyon
 	Color(String colorCode) {
         this.colorCode = colorCode;
     }
